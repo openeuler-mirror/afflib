@@ -1,6 +1,6 @@
 Name:           afflib
 Version:        3.7.16
-Release:        8
+Release:        9
 Summary:        Libraries supporting advanced forensic formats
 
 License:        BSD with advertising
@@ -9,7 +9,7 @@ Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Patch0:         Sanity-check-size-passed-to-malloc.patch
 
 BuildRequires:  gcc-c++ libtool curl-devel expat-devel lzma-devel zlib-devel
-BuildRequires:  ncurses-devel libtermcap-devel openssl-devel python2-devel
+BuildRequires:  ncurses-devel openssl-devel python2-devel
 
 Provides:      afftools = %{version}-%{release}
 Obsoletes:     afftools < %{version}-%{release}
@@ -75,5 +75,8 @@ sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 %{_mandir}/man1/aff*.1.*
 
 %changelog
+* Wed Mar 04 2019 yangjian<yangjian79@huawei.com> - 3.7.16-9
+- Change  buildrequires
+
 * Wed Feb 22 2019 yangjian<yangjian79@huawei.com> - 3.7.16-8
 - Package init
