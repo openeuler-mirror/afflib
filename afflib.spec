@@ -1,22 +1,25 @@
 Name:           afflib
-Version:        3.7.16
-Release:        9
-Summary:        Libraries supporting advanced forensic formats
-
+Version:        3.7.18
+Release:        3
+Summary:        Library to support the Advanced Forensic Format
 License:        BSD with advertising
 URL:            https://github.com/sshock/AFFLIBv3
-Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:         Sanity-check-size-passed-to-malloc.patch
-
-BuildRequires:  gcc-c++ libtool curl-devel expat-devel lzma-devel zlib-devel
-BuildRequires:  ncurses-devel openssl-devel python2-devel
-
-Provides:      afftools = %{version}-%{release}
-Obsoletes:     afftools < %{version}-%{release}
+Source0:        %{url}/archive/v%{version}.tar.gz
+BuildRequires:  gcc-c++ libtool curl-devel expat-devel ncurses-devel
+BuildRequires:  libtermcap-devel openssl-devel python2-devel zlib-devel
+BuildRequires:  python2 python2-devel python2-setuptools
+BuildRequires:  python3 python3-devel python3-setuptools
+Provides:       bundled(lzma) = 443
 
 %description
-AFF® is an open and extensible file format designed to store
-disk images and associated metadata.
+Afflib is a library for support of the Advanced Forensic Format.
+
+%package -n     afftools
+Summary:        The Utility for %{name}
+Requires:       %{name} = %{version}-%{release}
+
+%description -n afftools
+The %{name}-utils package contains utilities to use %{name}.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -24,44 +27,67 @@ Requires:       %{name} = %{version}-%{release}
 Requires:       openssl-devel pkgconfig
 
 %description    devel
-The %{name}-devel package contains libraries for
-developing applications that use %{name}.
+The %{name}-devel package contains libraries for developing 
+applications that use %{name}.
 
-%package        help
-Summary:        Help for %{name}
+%package -n python2-pyaff
+Summary:        The python2 binding for the AFFLIB
+Provides:       python-pyaff(aarch-64) = 3.7.18-2
+Provides:       python-pyaff = 3.7.18-2
+Obsoletes:      python-pyaff < 3.7.18-2
 
-%description  help
-The %{name}-help package contains help for %{name}.
+%description -n python2-pyaff
+Python2 bindings currently support a read-only file-like interface to AFFLIB and
+basic metadata accessor functions. These bindings are not currently complete.
+
+%package -n python3-pyaff
+Summary:        The python3 binding for the AFFLIB
+Provides:       python-pyaff(aarch-64) = 3.7.18-3
+Provides:       python-pyaff = 3.7.18-3
+Obsoletes:      python-pyaff < 3.7.18-3
+
+%description -n python3-pyaff
+Python3 bindings currently support a read-only file-like interface to AFFLIB and
+basic metadata accessor functions. These bindings are not currently complete.
 
 %prep
 %autosetup -p1 -n AFFLIBv3-%{version}
-
 find lzma443 -type f -exec chmod 0644 {} ';'
 chmod 0644 lib/base64.{h,cpp}
-
 ./bootstrap.sh
 
 %build
-%configure --enable-shared --disable-static --enable-python=yes --enable-s3=yes
-
+%configure --enable-shared --disable-static --enable-python=no --enable-s3=yes
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 %make_build
-
+cd pyaff
+%global py_setup_args build_ext --include-dirs %{_builddir}/AFFLIBv3-%{version}/include --library-dirs %{_builddir}/AFFLIBv3-%{version}/lib/.libs
+%py2_build
+%py3_build
 
 %install
 %make_install
 %delete_la
+cd pyaff
+%py2_install
+%py3_install
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+%postun
+/sbin/ldconfig
 
 %files
-%license COPYING
+%doc AUTHORS BUGLIST.txt ChangeLog NEWS README COPYING
+%doc doc/announce_2.2.txt
 %{_libdir}/*.so.*
+
+%files -n afftools
 %{_bindir}/aff*
 %{python2_sitearch}/*
+%{_mandir}/man1/aff*.1.*
 
 %files devel
 %doc doc/crypto_design.txt doc/crypto_doc.txt
@@ -69,12 +95,20 @@ sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/afflib.pc
 
-%files help
-%doc AUTHORS BUGLIST.txt ChangeLog NEWS README
-%doc doc/announce_2.2.txt
-%{_mandir}/man1/aff*.1.*
+%files -n python2-pyaff
+%doc pyaff/README COPYING
+%{python2_sitearch}/PyAFF*
+%{python2_sitearch}/pyaff*
+
+%files -n python3-pyaff
+%doc pyaff/README COPYING
+%{python3_sitearch}/PyAFF*
+%{python3_sitearch}/pyaff*
 
 %changelog
+* Mon Jun 1 2020 wangyue <wangyue92@huawei.com> - 3.7.18-3
+- Upgrade package
+
 * Wed Mar 04 2019 yangjian<yangjian79@huawei.com> - 3.7.16-9
 - Change  buildrequires
 
