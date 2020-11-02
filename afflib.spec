@@ -1,13 +1,12 @@
 Name:           afflib
 Version:        3.7.18
-Release:        3
+Release:        4
 Summary:        Library to support the Advanced Forensic Format
 License:        BSD with advertising
 URL:            https://github.com/sshock/AFFLIBv3
 Source0:        %{url}/archive/v%{version}.tar.gz
 BuildRequires:  gcc-c++ libtool curl-devel expat-devel ncurses-devel
-BuildRequires:  libtermcap-devel openssl-devel python2-devel zlib-devel
-BuildRequires:  python2 python2-devel python2-setuptools
+BuildRequires:  libtermcap-devel openssl-devel zlib-devel
 BuildRequires:  python3 python3-devel python3-setuptools
 Provides:       bundled(lzma) = 443
 
@@ -29,16 +28,6 @@ Requires:       openssl-devel pkgconfig
 %description    devel
 The %{name}-devel package contains libraries for developing 
 applications that use %{name}.
-
-%package -n python2-pyaff
-Summary:        The python2 binding for the AFFLIB
-Provides:       python-pyaff(aarch-64) = 3.7.18-2
-Provides:       python-pyaff = 3.7.18-2
-Obsoletes:      python-pyaff < 3.7.18-2
-
-%description -n python2-pyaff
-Python2 bindings currently support a read-only file-like interface to AFFLIB and
-basic metadata accessor functions. These bindings are not currently complete.
 
 %package -n python3-pyaff
 Summary:        The python3 binding for the AFFLIB
@@ -64,14 +53,12 @@ sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 %make_build
 cd pyaff
 %global py_setup_args build_ext --include-dirs %{_builddir}/AFFLIBv3-%{version}/include --library-dirs %{_builddir}/AFFLIBv3-%{version}/lib/.libs
-%py2_build
 %py3_build
 
 %install
 %make_install
 %delete_la
 cd pyaff
-%py2_install
 %py3_install
 
 %post
@@ -86,7 +73,6 @@ cd pyaff
 
 %files -n afftools
 %{_bindir}/aff*
-%{python2_sitearch}/*
 %{_mandir}/man1/aff*.1.*
 
 %files devel
@@ -95,17 +81,15 @@ cd pyaff
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/afflib.pc
 
-%files -n python2-pyaff
-%doc pyaff/README COPYING
-%{python2_sitearch}/PyAFF*
-%{python2_sitearch}/pyaff*
-
 %files -n python3-pyaff
 %doc pyaff/README COPYING
 %{python3_sitearch}/PyAFF*
 %{python3_sitearch}/pyaff*
 
 %changelog
+* Wed Oct 21 2020 wutao <wutao61@huawei.com> - 3.7.18-4
+- delete python2 modules
+
 * Mon Jun 1 2020 wangyue <wangyue92@huawei.com> - 3.7.18-3
 - Upgrade package
 
