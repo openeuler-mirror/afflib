@@ -1,8 +1,8 @@
 Name:           afflib
 Version:        3.7.18
-Release:        4
+Release:        5
 Summary:        Library to support the Advanced Forensic Format
-License:        BSD with advertising
+License:        LGPL-2.0 and LGPL-2.1 and GPL-2.0+ and Public Domain
 URL:            https://github.com/sshock/AFFLIBv3
 Source0:        %{url}/archive/v%{version}.tar.gz
 BuildRequires:  gcc-c++ libtool curl-devel expat-devel ncurses-devel
@@ -87,6 +87,9 @@ cd pyaff
 %{python3_sitearch}/pyaff*
 
 %changelog
+* Thu Dec 03 2020 Ge Wang <wangge20@huawei.com> - 3.7.18-5
+- modify license
+
 * Wed Oct 21 2020 wutao <wutao61@huawei.com> - 3.7.18-4
 - delete python2 modules
 
