@@ -1,6 +1,6 @@
 Name:           afflib
 Version:        3.7.16
-Release:        9
+Release:        10
 Summary:        Libraries supporting advanced forensic formats
 
 License:        BSD with advertising
@@ -8,9 +8,9 @@ URL:            https://github.com/sshock/AFFLIBv3
 Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Patch0:         Sanity-check-size-passed-to-malloc.patch
 
-BuildRequires:  gcc-c++ libtool curl-devel expat-devel lzma-devel zlib-devel
+BuildRequires:  gcc-c++ libtool curl-devel expat-devel zlib-devel
 BuildRequires:  ncurses-devel openssl-devel python2-devel
-
+Provides:       bundled(lzma) = 443
 Provides:      afftools = %{version}-%{release}
 Obsoletes:     afftools < %{version}-%{release}
 
@@ -75,6 +75,9 @@ sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 %{_mandir}/man1/aff*.1.*
 
 %changelog
+* Fri Jun 04 2021 wangyue<wangyue92@huawei.com> - 3.7.16-10
+- remove lzma-devel buildrequire
+
 * Wed Mar 04 2019 yangjian<yangjian79@huawei.com> - 3.7.16-9
 - Change  buildrequires
 
