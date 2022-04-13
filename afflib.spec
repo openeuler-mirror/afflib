@@ -1,6 +1,6 @@
 Name:           afflib
-Version:        3.7.18
-Release:        6
+Version:        3.7.19
+Release:        1
 Summary:        Library to support the Advanced Forensic Format
 License:        LGPL-2.0 and LGPL-2.1 and GPL-2.0+ and Public Domain
 URL:            https://github.com/sshock/AFFLIBv3
@@ -87,6 +87,9 @@ cd pyaff
 %{python3_sitearch}/pyaff*
 
 %changelog
+* Wed Apr 13 2022 YukariChiba <i@0x7f.cc> - 3.7.19-1
+- Upgrade version to 3.7.19
+
 * Tue Jan 11 2022 houyingchao <houyingchao@huawei.com> - 3.7.18-6
 - Resolve compilation failure of afflib
 
